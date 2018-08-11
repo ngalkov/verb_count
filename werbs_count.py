@@ -4,6 +4,9 @@
 import os
 from collections import Counter
 
+from python_syntax_processing import extract_func_names, split_name_to_words
+from natural_language_processing import filter_verbs
+
 
 PROJECTS = [
     'django',
@@ -20,7 +23,14 @@ def parse_cmd_line_args():
 
 
 def find_verbs_in_file(python_file):
-    raise NotImplementedError
+    verbs_list = []
+    with open(python_file) as fp:
+        file_content = fp.read()
+    func_list = extract_func_names(file_content)
+    for func_name in func_list:
+        words_list = split_name_to_words(func_name)
+        verbs_list += filter_verbs(words_list)
+    return verbs_list
 
 
 def find_python_files(project_dir):
