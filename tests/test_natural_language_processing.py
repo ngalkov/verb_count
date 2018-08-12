@@ -1,6 +1,7 @@
 import unittest
 from natural_language_processing import *
 
+
 class TestNLP(unittest.TestCase):
     def test_is_verb(self):
         cases = (
@@ -17,3 +18,7 @@ class TestNLP(unittest.TestCase):
             filter_verbs(["get", "the", "data", "", " "]),
             ["get"]
         )
+
+
+if __name__ == "__main__":
+    unittest.main()
