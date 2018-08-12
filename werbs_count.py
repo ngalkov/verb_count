@@ -2,6 +2,7 @@
 
 
 import os
+import argparse
 from collections import Counter
 
 from python_syntax_processing import extract_func_names, split_name_to_words
@@ -19,7 +20,19 @@ PROJECTS = [
 
 
 def parse_cmd_line_args():
-    raise NotImplementedError
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--dir",
+        help="path to directory with projects",
+        default="./",
+        dest="projects_dir"
+    )
+    parser.add_argument(
+        "--max_verbs",
+        help="number of verbs to print",
+        default=200
+    )
+    return parser.parse_args()
 
 
 def find_verbs_in_file(python_file):
