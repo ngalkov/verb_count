@@ -1,5 +1,5 @@
 import unittest
-from werbs_count import *
+from verbs_count import *
 
 
 class TestFilesDetection(unittest.TestCase):
