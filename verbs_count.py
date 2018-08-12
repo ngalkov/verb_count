@@ -65,20 +65,24 @@ def find_verbs_in_project(project_dir):
 
 def get_verbs_statistics(projects_dir="./"):
     verbs_statistics = Counter()
+    verbs_count = 0
     for project in PROJECTS:
         project_dir = os.path.join(projects_dir, project)
         if not os.path.isdir(project_dir):
             continue
         project_verbs = find_verbs_in_project(project_dir)
         verbs_statistics.update(project_verbs)
-    return verbs_statistics
+        verbs_count += len(project_verbs)
+    return verbs_statistics, verbs_count
 
 
-def make_report(verbs_statistics, max_verbs):
-    raise NotImplementedError
+def make_report(verbs_statistics, max_verbs, verbs_count):
+    print('total %s verbs, %s unique' % (verbs_count, len(verbs_statistics)))
+    for word, occurrence in verbs_statistics.most_common(max_verbs):
+        print(word, occurrence)
 
 
 if __name__ == "__main__":
     args = parse_cmd_line_args()
-    verbs_statistics = get_verbs_statistics(args.projects_dir)
-    make_report(verbs_statistics, args.max_verbs)
+    verbs_statistics, verbs_count = get_verbs_statistics(args.projects_dir)
+    make_report(verbs_statistics, args.max_verbs, verbs_count)
