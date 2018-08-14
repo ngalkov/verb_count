@@ -9,16 +9,6 @@ from python_syntax_processing import extract_func_names, split_name_to_words
 from natural_language_processing import filter_verbs
 
 
-PROJECTS = [
-    'django',
-    'flask',
-    'pyramid',
-    'reddit',
-    'requests',
-    'sqlalchemy',
-]
-
-
 def parse_cmd_line_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -42,15 +32,23 @@ def parse_cmd_line_args():
         type=int,
         default=200
     )
+    parser.add_argument(
+        "--no_magic",
+        help="don't count verbs in magic methods",
+        action="store_true",
+        default=False
+    )
     return parser.parse_args()
 
 
-def find_verbs_in_file(python_file):
+def find_verbs_in_file(python_file, no_magic_methods=False):
     verbs_list = []
     with open(python_file) as fp:
         file_content = fp.read()
     func_list = extract_func_names(file_content)
     for func_name in func_list:
+        if no_magic_methods and func_name.startswith("__") and func_name.endswith("__"):
+            continue
         words_list = split_name_to_words(func_name)
         verbs_list.extend(filter_verbs(words_list))
     return verbs_list
@@ -65,21 +63,21 @@ def find_python_files(project_dir):
     return python_files
 
 
-def find_verbs_in_project(project_dir):
+def find_verbs_in_project(project_dir, no_magic_methods=False):
     verbs_list = []
     python_files = find_python_files(project_dir)
     for python_file in python_files:
-        verbs_list.extend(find_verbs_in_file(python_file))
+        verbs_list.extend(find_verbs_in_file(python_file, no_magic_methods=no_magic_methods))
     return verbs_list
 
 
-def get_verbs_statistics(projects_list):
+def get_verbs_statistics(projects_list, no_magic_methods=False):
     verbs_statistics = Counter()
     verbs_count = 0
     for project in projects_list:
         if not os.path.isdir(project):
             continue
-        project_verbs = find_verbs_in_project(project)
+        project_verbs = find_verbs_in_project(project, no_magic_methods)
         verbs_statistics.update(project_verbs)
         verbs_count += len(project_verbs)
     return verbs_statistics, verbs_count
@@ -98,5 +96,5 @@ if __name__ == "__main__":
         with open(args.projects_list) as fp:
             projects.extend(map(str.strip, fp.readlines()))
     projects = [os.path.join(args.dir, project) for project in projects]
-    verbs_statistics, verbs_count = get_verbs_statistics(projects)
+    verbs_statistics, verbs_count = get_verbs_statistics(projects, args.no_magic)
     make_report(verbs_statistics, args.max_verbs, verbs_count)
