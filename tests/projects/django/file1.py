@@ -4,3 +4,7 @@ def make_smth1():
 
 def make_smth2():
     pass
+
+
+def __get__():
+    pass
