@@ -22,5 +22,3 @@ class Class1():
 
 
 class1 = Class1
-
-
