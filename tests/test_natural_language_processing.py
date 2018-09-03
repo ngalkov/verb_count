@@ -15,8 +15,8 @@ class TestNLP(unittest.TestCase):
 
     def test_filter_verbs(self):
         self.assertEqual(
-            filter_verbs(["get", "the", "data", "", " "]),
-            ["get"]
+            filter_verbs(["get", "got", "gets", "the", "data", "", " "]),
+            ["get", "got", "gets"]
         )
 
 
