@@ -41,10 +41,18 @@ def parse_cmd_line_args():
     return parser.parse_args()
 
 
+def read_file(file_path):
+    """Return file content or None in case of error"""
+    try:
+        with open(file_path) as fp:
+            return fp.read()
+    except OSError:
+        return None
+
+
 def find_verbs_in_file(python_file, no_magic_methods=False):
     verbs_list = []
-    with open(python_file) as fp:
-        file_content = fp.read()
+    file_content = read_file(python_file)
     func_list = extract_func_names(file_content)
     for func_name in func_list:
         if no_magic_methods and func_name.startswith("__") and func_name.endswith("__"):
